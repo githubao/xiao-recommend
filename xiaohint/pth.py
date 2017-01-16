@@ -18,12 +18,13 @@ import os
 from os.path import abspath, dirname
 import logging
 
-FILE_PATH = dirname(abspath(__file__)) + os.sep + 'file' + os.sep
-LOG_PATH = dirname(abspath(__file__)) + os.sep + 'log' + os.sep
+ROOT_PATH = dirname(abspath(__file__)) + os.sep
+FILE_PATH = ROOT_PATH + 'file' + os.sep
+LOG_PATH = ROOT_PATH + os.sep + 'log' + os.sep
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',
-                    # filename='/mnt/work/nlptrain/logs/spider.log',
-                    # filemode='a'
+                    filename='{}/log/run.log'.format(dirname(abspath(ROOT_PATH))),
+                    filemode='a'
                     )

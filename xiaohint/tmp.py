@@ -14,11 +14,19 @@
 @time: 2017/1/11 20:46
 """
 
+import requests
+import json
+
 
 def main():
-    print("do sth")
+    res = requests.post('http://127.0.0.1:5000/recommend', {'word': '小包'})
+    json_data = json.loads(res.content.decode('unicode_escape'))
+    data = json_data['data']
+    output = []
+    for item in data:
+        output.append('{}: {}'.format(item[0], item[1]))
+    print('\n'.join(output))
 
 
 if __name__ == '__main__':
     main()
-
