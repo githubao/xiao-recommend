@@ -19,7 +19,7 @@ import json
 
 
 def main():
-    res = requests.post('http://127.0.0.1:5000/recommend', {'word': '小包'})
+    res = requests.post('http://127.0.0.1:5000/recommend', {'word': '大学生'})
     json_data = json.loads(res.content.decode('unicode_escape'))
     data = json_data['data']
     output = []
