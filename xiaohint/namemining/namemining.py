@@ -114,8 +114,15 @@ def sort_name(first_cnt, last_dic):
     first_sum = sum(name['first_cnt'] for name in name_list)
     last_sum = sum(name['last_cnt'] for name in name_list)
     for item in name_list:
-        item['score'] = float(
-                '{:.5f}'.format(0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum))
+        # item['score'] = float('{:.5f}'.format(0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum))
+        item['score'] = 0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum
+
+    # 分值表示成0-100
+    score_max = max(name['score'] for name in name_list)
+    score_min = min(name['score'] for name in name_list)
+
+    for item in name_list:
+        item['score'] = float('{:.5f}'.format(100 * (item['score'] - score_min) / (score_max - score_min)))
 
     name_list.sort(key=lambda x: x['score'], reverse=True)
     return name_list
