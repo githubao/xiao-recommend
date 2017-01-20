@@ -20,6 +20,7 @@ import logging
 
 ROOT_PATH = dirname(abspath(__file__)) + os.sep
 FILE_PATH = ROOT_PATH + 'file' + os.sep
+RESOURCE_PATH = ROOT_PATH + 'resource' + os.sep
 LOG_PATH = ROOT_PATH + os.sep + 'log' + os.sep
 
 logging.basicConfig(level=logging.INFO,

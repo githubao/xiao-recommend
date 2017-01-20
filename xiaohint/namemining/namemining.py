@@ -24,9 +24,11 @@ from collections import defaultdict
 chinese = re.compile('^[\u4e00-\u9fa5]')
 
 root_path = '{}/renren'.format(FILE_PATH)
-out_path = '{}/name.txt'.format(FILE_PATH)
+out_path = '{}/name.txt'.format(root_path)
+err_path = '{}/err.txt'.format(FILE_PATH)
 
 fuxing = None
+firstnames = None
 
 
 def name_cnt():
@@ -37,8 +39,11 @@ def name_cnt():
     first_cnt = defaultdict(int)
     last_dic = defaultdict(dict)
 
-    for file in os.listdir(root_path):
-        full_path = os.path.join(root_path, file)
+    for file_name in os.listdir(root_path):
+        full_path = os.path.join(root_path, file_name)
+
+        if not file_name.endswith('json'):
+            continue
 
         logging.info('process file: {}'.format(full_path))
         cnt = 0
@@ -82,9 +87,12 @@ def name_cnt():
     # print(sorted_last)
 
     name_sorted = sort_name(first_cnt, last_dic)
-    with open(out_path, 'w', encoding='utf-8') as fw:
+    with open(out_path, 'w', encoding='utf-8') as fw, open(err_path, 'w', encoding='utf-8') as ferr:
         for item in name_sorted:
-            fw.write('{}\n'.format(item))
+            if item['first'] in firstnames:
+                ferr.write('{}\n'.format(item))
+            else:
+                fw.write('{}\n'.format(item))
 
 
 def sort_name(first_cnt, last_dic):
@@ -139,13 +147,22 @@ def sort_name_2(first_cnt, last_dic):
         print('*' * 20)
 
 
+def load_firstnames():
+    global firstnames
+    with open('{}/fuxing.txt'.format(RESOURCE_PATH), 'r', encoding='utf-8') as f:
+        line = f.readline()
+        firstnames = line.strip().split('|')
+
+
 def load_fuxing():
     global fuxing
-    with open('{}/fuxing.txt'.format(FILE_PATH), 'r', encoding='utf-8') as f:
+    with open('{}/fuxing.txt'.format(RESOURCE_PATH), 'r', encoding='utf-8') as f:
         line = f.readline()
         fuxing = line.strip().split('|')
 
 
+if not firstnames:
+    load_firstnames()
 if not fuxing:
     load_fuxing()
 
