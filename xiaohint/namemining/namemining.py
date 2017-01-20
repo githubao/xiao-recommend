@@ -25,7 +25,7 @@ chinese = re.compile('^[\u4e00-\u9fa5]')
 
 root_path = '{}/renren'.format(FILE_PATH)
 out_path = '{}/name.txt'.format(root_path)
-err_path = '{}/err.txt'.format(FILE_PATH)
+err_path = '{}/err.txt'.format(root_path)
 
 fuxing = None
 firstnames = None
@@ -89,7 +89,7 @@ def name_cnt():
     name_sorted = sort_name(first_cnt, last_dic)
     with open(out_path, 'w', encoding='utf-8') as fw, open(err_path, 'w', encoding='utf-8') as ferr:
         for item in name_sorted:
-            if item['first'] in firstnames:
+            if not item['first'] in firstnames:
                 ferr.write('{}\n'.format(item))
             else:
                 fw.write('{}\n'.format(item))
@@ -149,7 +149,7 @@ def sort_name_2(first_cnt, last_dic):
 
 def load_firstnames():
     global firstnames
-    with open('{}/fuxing.txt'.format(RESOURCE_PATH), 'r', encoding='utf-8') as f:
+    with open('{}/firstnames.txt'.format(RESOURCE_PATH), 'r', encoding='utf-8') as f:
         line = f.readline()
         firstnames = line.strip().split('|')
 
