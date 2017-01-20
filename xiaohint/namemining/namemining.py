@@ -69,9 +69,9 @@ def name_cnt():
                     last_dic[first_name].setdefault(last_name, 0)
                     last_dic[first_name][last_name] += 1
 
-            cnt += 1
-            if cnt % 1000 == 0:
-                logging.info('process cnt: {}'.format(cnt))
+                cnt += 1
+                if cnt % 1000 == 0:
+                    logging.info('process cnt: {}'.format(cnt))
 
     # last_dic = {key: list(value) for key, value in last_dic.items()}
     #
