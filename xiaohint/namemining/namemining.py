@@ -24,6 +24,7 @@ from collections import defaultdict
 chinese = re.compile('^[\u4e00-\u9fa5]')
 
 root_path = '{}/renren'.format(FILE_PATH)
+out_path = '{}/name.txt'.format(FILE_PATH)
 
 fuxing = None
 
@@ -73,10 +74,33 @@ def name_cnt():
     # print(sorted_first)
     # print(sorted_last)
 
-    sort_name(first_cnt, last_dic)
+    sorted_name = sort_name(first_cnt, last_dic)
+    with open(out_path, 'w', encoding='utf-8') as fw:
+        for item in sorted_name:
+            fw.write('{}\n'.format(item))
 
 
 def sort_name(first_cnt, last_dic):
+    name_list = []
+    sorted_first = sorted(first_cnt.items(), key=lambda x: x[1], reverse=True)
+    for k, v in sorted_first:
+        name_dic = last_dic.get(k)
+        sorted_last = sorted(name_dic.items(), key=lambda x: x[1], reverse=True)
+        for ck, cv in sorted_last:
+            dic = {}
+            dic['first'] = k
+            dic['first_cnt'] = v
+            dic['last'] = ck
+            dic['last'] = cv
+            dic['cnt'] = v + cv
+            dic['name'] = '{}{}'.format(k, ck)
+            name_list.append(dic)
+
+    name_list.sort(key=lambda x: x['cnt'], reverse=True)
+    return name_list
+
+
+def sort_name_2(first_cnt, last_dic):
     sorted_first = sorted(first_cnt.items(), key=lambda x: x[1], reverse=True)
     for k, v in sorted_first:
         print('{}\t{}'.format(k, v))
