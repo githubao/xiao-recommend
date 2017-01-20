@@ -21,7 +21,7 @@ import re
 from xiaohint.pth import *
 from collections import defaultdict
 
-chinese = re.compile('^[\u4e00-\u9fa5]')
+chinese = re.compile('[\u4e00-\u9fa5]')
 
 root_path = '{}/renren'.format(FILE_PATH)
 out_path = '{}/name.txt'.format(root_path)
@@ -37,6 +37,7 @@ def name_cnt():
     '''
 
     first_cnt = defaultdict(int)
+    last_cnt = defaultdict(int)
     last_dic = defaultdict(dict)
 
     for file_name in os.listdir(root_path):
@@ -56,7 +57,7 @@ def name_cnt():
                 if not name or len(name) < 2 or len(name) > 4:
                     continue
 
-                m = chinese.search(name)
+                m = chinese.match(name)
                 if not m:
                     continue
 
@@ -71,6 +72,8 @@ def name_cnt():
 
                 if first_name and last_name:
                     first_cnt[first_name] += 1
+                    last_cnt[last_name] += 1
+
                     last_dic[first_name].setdefault(last_name, 0)
                     last_dic[first_name][last_name] += 1
 
@@ -86,7 +89,7 @@ def name_cnt():
     # print(sorted_first)
     # print(sorted_last)
 
-    name_sorted = sort_name(first_cnt, last_dic)
+    name_sorted = sort_name(first_cnt, last_cnt, last_dic)
     with open(out_path, 'w', encoding='utf-8') as fw, open(err_path, 'w', encoding='utf-8') as ferr:
         for item in name_sorted:
             if not item['first'] in firstnames:
@@ -95,24 +98,22 @@ def name_cnt():
                 fw.write('{}\n'.format(item))
 
 
-def sort_name(first_cnt, last_dic):
+def sort_name(first_cnt, last_cnt, last_dic):
     name_list = []
-    sorted_first = sorted(first_cnt.items(), key=lambda x: x[1], reverse=True)
-    for k, v in sorted_first:
-        name_dic = last_dic.get(k)
-        last_sorted = sorted(name_dic.items(), key=lambda x: x[1], reverse=True)
-        for ck, cv in last_sorted:
+    for k, v in first_cnt.items():
+        for ck, cv in last_dic[k].items():
             dic = {}
             dic['first'] = k
             dic['first_cnt'] = v
             dic['last'] = ck
-            dic['last_cnt'] = cv
+            dic['last_cnt'] = last_cnt[ck]
             dic['name'] = '{}{}'.format(k, ck)
             name_list.append(dic)
 
     # 低于某个阈值的数据不要
-    name_list.sort(key=lambda x: x['first_cnt'], reverse=True)
-    first_threshold = name_list[int(9 / 10 * len(name_list))]['first_cnt']
+    # name_list.sort(key=lambda x: x['first_cnt'], reverse=True)
+    # first_threshold = name_list[int(9 / 10 * len(name_list))]['first_cnt']
+    first_threshold = 0
     name_list.sort(key=lambda x: x['last_cnt'], reverse=True)
     last_threshold = name_list[int(9 / 10 * len(name_list))]['last_cnt']
 
@@ -122,8 +123,8 @@ def sort_name(first_cnt, last_dic):
     first_sum = sum(name['first_cnt'] for name in name_list)
     last_sum = sum(name['last_cnt'] for name in name_list)
     for item in name_list:
-        # item['score'] = float('{:.5f}'.format(0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum))
-        item['score'] = 0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum
+        item['score'] = 0.2 * item['first_cnt'] / first_sum + 0.8 * item['last_cnt'] / last_sum
+        # item['score'] = item['last_cnt'] / last_sum
 
     # 分值表示成0-100
     score_max = max(name['score'] for name in name_list)
@@ -167,8 +168,15 @@ if not fuxing:
     load_fuxing()
 
 
+def test():
+    name = '|小包'
+    # name = 'xc包'
+    print(chinese.match(name))
+
+
 def main():
     name_cnt()
+    # test()
 
 
 if __name__ == '__main__':
