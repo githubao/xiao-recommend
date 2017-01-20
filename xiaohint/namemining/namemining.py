@@ -102,12 +102,20 @@ def sort_name(first_cnt, last_dic):
             dic['name'] = '{}{}'.format(k, ck)
             name_list.append(dic)
 
+    # 低于某个阈值的数据不要
+    name_list.sort(key=lambda x: x['first_cnt'], reverse=True)
+    first_threshold = name_list[int(9 / 10 * len(name_list))]['first_cnt']
+    name_list.sort(key=lambda x: x['last_cnt'], reverse=True)
+    last_threshold = name_list[int(9 / 10 * len(name_list))]['last_cnt']
+
+    name_list = list(filter(lambda x: x['first_cnt'] >= first_threshold and x['last_cnt'] >= last_threshold, name_list))
+
     # 数据归一化
     first_sum = sum(name['first_cnt'] for name in name_list)
     last_sum = sum(name['last_cnt'] for name in name_list)
     for item in name_list:
         item['score'] = float(
-            '{:.5f}'.format(0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum))
+                '{:.5f}'.format(0.35 * item['first_cnt'] / first_sum + 0.65 * item['last_cnt'] / last_sum))
 
     name_list.sort(key=lambda x: x['score'], reverse=True)
     return name_list
