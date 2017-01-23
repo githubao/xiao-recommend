@@ -106,34 +106,48 @@ def sort_name(first_cnt, last_cnt, last_dic):
             dic['first'] = k
             dic['first_cnt'] = v
             dic['last'] = ck
-            dic['last_cnt'] = last_cnt[ck]
+            dic['last_total_cnt'] = last_cnt[ck]
+            dic['last_this_cnt'] = cv
             dic['name'] = '{}{}'.format(k, ck)
             name_list.append(dic)
 
     # 低于某个阈值的数据不要
     # name_list.sort(key=lambda x: x['first_cnt'], reverse=True)
     # first_threshold = name_list[int(9 / 10 * len(name_list))]['first_cnt']
-    first_threshold = 0
-    name_list.sort(key=lambda x: x['last_cnt'], reverse=True)
-    last_threshold = name_list[int(9 / 10 * len(name_list))]['last_cnt']
-
-    name_list = list(filter(lambda x: x['first_cnt'] >= first_threshold and x['last_cnt'] >= last_threshold, name_list))
+    # name_list.sort(key=lambda x: x['last_cnt'], reverse=True)
+    # last_threshold = name_list[int(9 / 10 * len(name_list))]['last_cnt']
+    # name_list = list(filter(lambda x: x['first_cnt'] >= first_threshold and x['last_cnt'] >= last_threshold, name_list))
 
     # 数据归一化
-    first_sum = sum(name['first_cnt'] for name in name_list)
-    last_sum = sum(name['last_cnt'] for name in name_list)
+    # first_sum = sum(name['first_cnt'] for name in name_list)
+    # last_sum = sum(name['last_cnt'] for name in name_list)
+    # for item in name_list:
+    #     item['score'] = 0.2 * item['first_cnt'] / first_sum + 0.8 * item['last_cnt'] / last_sum
+    #     # item['score'] = item['last_cnt'] / last_sum
+    #
+    # # 分值表示成0-100
+    # score_max = max(name['score'] for name in name_list)
+    # score_min = min(name['score'] for name in name_list)
+    #
+    # for item in name_list:
+    #     item['score'] = float('{:.5f}'.format(100 * (item['score'] - score_min) / (score_max - score_min)))
+
+    # 按照分值排序
+    # name_list.sort(key=lambda x: x['score'], reverse=True)
+
+    first_set = defaultdict(set)
+    last_set = defaultdict(set)
     for item in name_list:
-        item['score'] = 0.2 * item['first_cnt'] / first_sum + 0.8 * item['last_cnt'] / last_sum
-        # item['score'] = item['last_cnt'] / last_sum
-
-    # 分值表示成0-100
-    score_max = max(name['score'] for name in name_list)
-    score_min = min(name['score'] for name in name_list)
+        first_set[item['first']].add(item['last'])
+        last_set[item['last']].add(item['first'])
 
     for item in name_list:
-        item['score'] = float('{:.5f}'.format(100 * (item['score'] - score_min) / (score_max - score_min)))
+        item['first_ref'] = len(first_set[item['first']])
+        item['last_ref'] = len(last_set[item['last']])
 
-    name_list.sort(key=lambda x: x['score'], reverse=True)
+    # 多少个姓都用了这个名字
+    name_list.sort(key=lambda x: x['last_ref'], reverse=True)
+
     return name_list
 
 
