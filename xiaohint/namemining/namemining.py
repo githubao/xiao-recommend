@@ -30,6 +30,8 @@ err_path = '{}/err.txt'.format(root_path)
 fuxing = None
 firstnames = None
 
+MIN_ALLOW = 5
+
 
 def name_cnt():
     '''
@@ -92,10 +94,11 @@ def name_cnt():
     name_sorted = sort_name(first_cnt, last_cnt, last_dic)
     with open(out_path, 'w', encoding='utf-8') as fw, open(err_path, 'w', encoding='utf-8') as ferr:
         for item in name_sorted:
-            if not item['first'] in firstnames:
-                ferr.write('{}\n'.format(item))
+            # if not item['first'] in firstnames:
+            if is_not_name(item):
+                ferr.write('{}\n'.format(json.dumps(item,ensure_ascii=False,sort_keys=True)))
             else:
-                fw.write('{}\n'.format(item))
+                fw.write('{}\n'.format(json.dumps(item,ensure_ascii=False,sort_keys=True)))
 
 
 def sort_name(first_cnt, last_cnt, last_dic):
@@ -160,6 +163,14 @@ def sort_name_2(first_cnt, last_dic):
         for ck, cv in sorted_last:
             print('\t{}\t{}'.format(ck, cv))
         print('*' * 20)
+
+
+def is_not_name(item):
+    return less_than_min(item['last_total_cnt']) or less_than_min(item['last_ref']) or less_than_min(item['first_ref'])
+
+
+def less_than_min(num):
+    return MIN_ALLOW >= num
 
 
 def load_firstnames():
