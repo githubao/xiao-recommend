@@ -54,7 +54,7 @@ def get_content():
                 cate = cate_dic.get(i, None)
                 f1.write('{}\t{}\t{}\t{}\n'.format(i, cate, sub_cate_id, sub_cate_name))
                 for idx, item in enumerate(tag_list):
-                    f2.write('{}\t{}\t{}\n'.format(sub_cate_id, '{}{:03d}'.format(sub_cate_id, idx), item))
+                    f2.write('{}\t{}\t{}\n'.format(sub_cate_id, '{}{:03d}'.format(sub_cate_id, idx+1), item))
 
             # break
 
