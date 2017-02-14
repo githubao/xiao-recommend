@@ -53,8 +53,8 @@ def get_content():
             with open(hepai_list_file, 'a', encoding='utf-8') as f1, open(hepai_item_file, 'a', encoding='utf-8') as f2:
                 cate = cate_dic.get(i, None)
                 f1.write('{}\t{}\t{}\t{}\n'.format(i, cate, sub_cate_id, sub_cate_name))
-                for item in tag_list:
-                    f2.write('{}\t{}\n'.format(sub_cate_id, item))
+                for idx, item in enumerate(tag_list):
+                    f2.write('{}\t{}\t{}\n'.format(sub_cate_id, '{}{:03d}'.format(sub_cate_id, idx), item))
 
             # break
 
