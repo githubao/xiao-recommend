@@ -19,13 +19,10 @@ import json
 
 
 def main():
-    res = requests.post('http://127.0.0.1:5000/recommend', {'word': '大学生'})
+    res = requests.post('http://127.0.0.1:5000/recommend', {'word': '游泳'})
     json_data = json.loads(res.content.decode('unicode_escape'))
     data = json_data['data']
-    output = []
-    for item in data:
-        output.append('{}: {}'.format(item[0], item[1]))
-    print('\n'.join(output))
+    print(data)
 
 
 if __name__ == '__main__':
