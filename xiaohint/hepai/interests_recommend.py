@@ -21,7 +21,7 @@ mysql = MyMysql()
 
 
 def recommend(word):
-    sql = 'SELECT sid from interests_item where tag = "{}" ORDER BY RAND() limit 1'.format(word)
+    sql = 'SELECT sid from interests_item where tag = "{}" and state = 1 ORDER BY RAND() limit 1'.format(word)
     sid = mysql.get_one(sql)
     if not sid:
         return None
@@ -32,10 +32,23 @@ def recommend(word):
     return [item[0] for item in mysql.get_many(sql2)]
 
 
+def test():
+    for i in range(0, 10):
+        word = '爬山'
+        results = recommend(word)
+        print(results)
+
+def test2():
+    words = ['吉他','足球','互联网','英雄联盟']
+
+    for word in words:
+        results = recommend(word)
+        print(results)
+
+
 def main():
-    word = '游泳'
-    results = recommend(word)
-    print(results)
+    # test()
+    test2()
 
 
 if __name__ == '__main__':
