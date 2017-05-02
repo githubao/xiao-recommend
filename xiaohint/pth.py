@@ -26,6 +26,7 @@ LOG_PATH = ROOT_PATH + os.sep + 'log' + os.sep
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',
-                    filename='{}/mining.log'.format(LOG_PATH),
-                    filemode='a'
+                    # filename='{}/spider.log'.format(LOG_PATH),
+                    # filemode='a',
+                    handlers=[logging.FileHandler('{}/mining.log'.format(LOG_PATH), 'a', encoding='utf-8')]
                     )

@@ -22,9 +22,10 @@ import json
 app = Flask(__name__)
 
 
-@app.route('/recommend', methods=['POST'])
+@app.route('/interests', methods=['POST','GET'])
 def recommend():
-    word = request.form.get('word')
+    # word = request.form.get('word')
+    word = request.args.get('word')
     res = interests_recommend.recommend(word)
     logging.info('[{}]->[{}]'.format(word, res))
     data = {'data': res}
@@ -33,7 +34,7 @@ def recommend():
 
 @app.route('/')
 def index():
-    return 'interests score run'
+    return 'interests run'
 
 
 if __name__ == '__main__':
